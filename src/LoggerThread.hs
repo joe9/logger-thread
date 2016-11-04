@@ -2,8 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module LoggerThread
-  ( toLog
-  , withLoggerThread
+  ( withLoggerThread
+  , Logger
   ) where
 
 import Control.Concurrent.STM.TQueue
@@ -13,28 +13,12 @@ import Data.Text
 import Protolude                     hiding (bracket)
 import System.Log.FastLogger
 
--- import Data.Time                     (FormatTime, defaultTimeLocale,
---                                       formatTime, getZonedTime)
--- toLog :: Text -> Text -> IO ()
--- toLog prefix s =
---   filename prefix >>=
---   (\f ->
---      appendFile (cs f)
---                 (s <> (singleton '\n')))
+type Logger = Text -> IO ()
+
 toLog :: TQueue Text -> Text -> IO ()
 toLog chan s = atomically (writeTQueue chan (s <> singleton '\n'))
 
--- logFilename :: Text -> Text -> IO Text
--- logFilename logDirectory prefix = do
---   z <- getZonedTime
---   return $ logDirectory <> "/" <> prefix <> dateString z <> ".log"
--- logDirectory :: FilePath
--- logDirectory = dataDirectory <> "/log/"
--- dateString
---   :: (FormatTime a)
---   => a -> Text
--- dateString = show . formatTime defaultTimeLocale "%Y%m%d"
-withLoggerThread :: (TQueue Text -> IO ()) -> IO ()
+withLoggerThread :: (Logger -> IO ()) -> IO ()
 withLoggerThread mainThread = do
   logChannel <- atomically newTQueue
   bracket
@@ -45,16 +29,15 @@ withLoggerThread mainThread = do
        threadDelay (1000 * 1000)
        cancel loggerThreadAsync
        putText "cancelled the loggerThread"
-       wait loggerThreadAsync
-       putText "waited for the loggerThread")
+       wait loggerThreadAsync)
     (\loggerThreadAsync -> do
        link loggerThreadAsync
        withException
-         (mainThread logChannel)
+         (mainThread (toLog logChannel))
          (\e -> do
             putText "exception in main thread"
             (print :: SomeException -> IO ()) e
-            putText "after the main thread, stop the loggerThread"))
+            putText "main thread exiting"))
 
 --   1 MiB = 1 mebibyte = 1,0242 bytes = 1,048,576 bytes
 --   100 MiB = 1,048,576 * 100 bytes

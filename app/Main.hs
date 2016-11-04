@@ -17,14 +17,10 @@ main = do
   putText ("number of cores: " <> show numCapabilities)
   withLoggerThread mainThread
 
-mainThread :: TQueue Text -> IO ()
-mainThread logChannel = do
-  toLog logChannel "logginng stuff and again"
-  threadDelay 1000000000
-  toLog logChannel "logginng stuff and again"
-  threadDelay 1000000000
-  toLog logChannel "logginng stuff and again"
-  threadDelay 1000000000
-  toLog logChannel "logginng stuff and again"
-  threadDelay 1000000000
-  toLog logChannel "logginng stuff and again"
+mainThread :: Logger -> IO ()
+mainThread logger = do
+  logger "logginng stuff"
+  threadDelay (1000 * 1000)
+  logger "logginng stuff again"
+  threadDelay (1000 * 1000)
+  logger "final logginng, exiting after this"
