@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module LoggerThread
+module Text.LoggerThread
   ( withLoggerThread
   , Logger
   ) where

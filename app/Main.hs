@@ -7,7 +7,7 @@ import Control.Concurrent            (threadDelay)
 import Control.Concurrent.STM.TQueue
 import Protolude                     hiding (bracket)
 
-import LoggerThread
+import Text.LoggerThread
 
 main :: IO ()
 main = do
