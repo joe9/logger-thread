@@ -8,7 +8,7 @@ license-file:        LICENSE
 author:              joe9
 maintainer:          joe9mail@gmail.com
 copyright:           2016 Joe9
-category:            Web
+category:            Text
 build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
