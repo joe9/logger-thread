@@ -1,6 +1,6 @@
 name:                logger-thread
 version:             0.1.0.0
-synopsis:            Run FastLogger in a thread and direct all queued message to it.
+synopsis:            Run FastLogger in a thread and direct all queued messages to it.
 description:         Please see README.md
 homepage:            https://github.com/joe9/logger-thread#readme
 license:             BSD3
